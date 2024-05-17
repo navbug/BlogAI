@@ -1,6 +1,7 @@
 # BlogAI - A web project to create blogs using generativeAI.
 
 Live Project link: https://blog-ai-azure.vercel.app/
+
 Project Github link: https://github.com/navbug/BlogAI/
 
 ## Features:
