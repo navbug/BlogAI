@@ -26,10 +26,10 @@ async function fetchImageForKeyphrase(keyphrase) {
 export const POST = async (req, res) => {
   try {
     const { topic } = await req.json();
-    const prompt = `Write a blog post on topic: ${topic}. Give an eye-catching title (approx. 10 words), subtitle should describe the title in short (25-30 words). The blog content should be 3-4 paragraphs where each paragraph length is no more than 80 words. Also, give 3 keyphrases related to the blog topic which I will use later to search accurate images related to the topic on Image fetching APIs. Provide the results in JSON format. The structure should be like this: { "title": "301 vs 302 Redirect: Which is better for SEO?", "subtitle": "When it comes to SEO, 301 and 302 redirects are not created equal. Here's what you need to know about the differences between the two.", "tag": "AI", "paragraphs": [ "paragraph 1", "paragraph 2", "paragraph 3" ], "keyphrases": [ "keyphrase 1", "keyphrase 2", "keyphrase 3" ] }. First paragraph is about introduction to the topic, keyphrases should be based on paragraphs respectively(if paragraphs are more than keyphrases defined only create keyphrases defined earlier) Don't add any extra information, only provide the JSON response.`;
+    const prompt = `Write a blog post on topic: ${topic}. Give an eye-catching title (approx. 10 words), subtitle should describe the title in short (25-30 words). The blog content should be 3-4 paragraphs where each paragraph length is no more than 80 words. Also, give 3 keyphrases related to the blog topic which I will use later to search accurate images related to the topic on Image fetching APIs. Provide the results in JSON format. The structure should be like this: { "title": "title", "subtitle": "Subtitle", "tag": "AI", "paragraphs": [ "paragraph 1", "paragraph 2", "paragraph 3" ], "keyphrases": [ "keyphrase 1", "keyphrase 2", "keyphrase 3" ] }. Don't add any extra information, only provide the JSON response.`;
 
     const msg = await anthropic.messages.create({
-      model: "claude-3-opus-20240229",
+      model: "claude-3-haiku-20240307",
       max_tokens: 1024,
       messages: [{ role: "user", content: prompt }],
     });
