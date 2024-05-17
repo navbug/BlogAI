@@ -38,14 +38,12 @@ export const POST = async (req, res) => {
     const blogPostData = JSON.parse(text);
     const { keyphrases } = blogPostData;
 
-    // const images = await Promise.all(
-    //   keyphrases.map(async (keyphrase) => {
-    //     const imageUrl = await fetchImageForKeyphrase(keyphrase);
-    //     return imageUrl;
-    //   })
-    // );
-
-    const images = ["https://images.unsplash.com/photo-1617333387457-e5d7e2c43a99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzkwNTl8MHwxfHNlYXJjaHwxfHxwcm9ibGVtJTIwc29sdmluZyUyMHRlY2huaXF1ZXN8ZW58MHx8fHwxNzE1ODQ2MjU5fDA&ixlib=rb-4.0.3&q=80&w=1080", "https://images.unsplash.com/photo-1617333387457-e5d7e2c43a99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzkwNTl8MHwxfHNlYXJjaHwxfHxwcm9ibGVtJTIwc29sdmluZyUyMHRlY2huaXF1ZXN8ZW58MHx8fHwxNzE1ODQ2MjU5fDA&ixlib=rb-4.0.3&q=80&w=1080", "https://images.unsplash.com/photo-1617333387457-e5d7e2c43a99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzkwNTl8MHwxfHNlYXJjaHwxfHxwcm9ibGVtJTIwc29sdmluZyUyMHRlY2huaXF1ZXN8ZW58MHx8fHwxNzE1ODQ2MjU5fDA&ixlib=rb-4.0.3&q=80&w=1080"];
+    const images = await Promise.all(
+      keyphrases.map(async (keyphrase) => {
+        const imageUrl = await fetchImageForKeyphrase(keyphrase);
+        return imageUrl;
+      })
+    );
 
     blogPostData.images = images;
 
