@@ -18,6 +18,7 @@ const RootLayout = ({ children }) => {
           </div>
 
           <main className="app">
+            <div className="bg-teal-500 px-4 py-2 text-md text-white fixed top-0 left-0 right-0">The Anthropic Claude API may not work because of no credits. You could check the generated posts on the homepage😐.</div>
             <Nav />
             <Toaster />
             {children}
