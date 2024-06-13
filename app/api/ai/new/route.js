@@ -1,9 +1,7 @@
-import Anthropic from "@anthropic-ai/sdk";
 import fetch from "node-fetch";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY);
 
 const unsplashApiKey = process.env.UNSPLASH_API_KEY;
 
@@ -26,15 +24,13 @@ async function fetchImageForKeyphrase(keyphrase) {
 export const POST = async (req, res) => {
   try {
     const { topic } = await req.json();
-    const prompt = `Write a blog post on topic: ${topic}. Give an eye-catching title (approx. 10 words), subtitle should describe the title in short (25-30 words). The blog content should be 3-4 paragraphs where each paragraph length is no more than 80 words. Also, give 3 keyphrases related to the blog topic which I will use later to search accurate images related to the topic on Image fetching APIs. Provide the results in JSON format. The structure should be like this: { "title": "title", "subtitle": "Subtitle", "tag": "AI", "paragraphs": [ "paragraph 1", "paragraph 2", "paragraph 3" ], "keyphrases": [ "keyphrase 1", "keyphrase 2", "keyphrase 3" ] }. Don't add any extra information, only provide the JSON response.`;
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const prompt = `Write a blog post on topic: ${topic}. Give an eye-catching title (approx. 10 words), subtitle should describe the title in short (25-30 words). The blog content should be 3-4 paragraphs where each paragraph length is no more than 80 words. Also, give 3 keyphrases(first will be the topic name provided itself) related to the blog topic & according to the paragraphs which I will use later to search accurate images related to the topic on Image fetching APIs. Provide the results in JSON format. The structure should be like this: { "title": "title", "subtitle": "Subtitle", "tag": "AI", "paragraphs": [ "paragraph 1", "paragraph 2", "paragraph 3" ], "keyphrases": [ "topic name provided", "keyphrase 2", "keyphrase 3" ] }. Don't add any extra information, only provide the JSON response.`;
 
-    const msg = await anthropic.messages.create({
-      model: "claude-3-haiku-20240307",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    });
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
 
-    const text = msg.content[0].text;
     const blogPostData = JSON.parse(text);
     const { keyphrases } = blogPostData;
 
@@ -47,11 +43,10 @@ export const POST = async (req, res) => {
 
     blogPostData.images = images;
 
-    console.log(blogPostData);
-
     return new Response(JSON.stringify(blogPostData), { status: 200 });
-  } catch (error) {
-    console.error("Error generating blog post:", error);
-    return new Response("Failed to generate blog post", { status: 500 });
+
+    } catch (error) {
+    console.error('Error generating content:', error);
   }
+  
 };
